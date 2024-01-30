@@ -217,17 +217,30 @@ where
 직원의 경우 <부서없음>으로 출력하시오. 단, 표준방식으로 작성하시오.
 출력항목 : 사번, 이름, 성, 부서명
 */ 
+--우선 저장된 레코드를 러프하게 확인한다.
+select first_name, hire_date, to_char(hire_date, 'yyyy')
+    from employees;
+--2007년에 입사한 사원을 인출한다.
+select first_name, hire_date from employees
+    where to_char(hire_date, 'yyyy')='2007';
 
-select
-    employee_id, first_name, last_name, department_id
-    ,hire_date
-from employees;
+select first_name, hire_date from employees
+    where hire_date like '07%';
+/* 외부조인을 표준방식으로 작성한 후 결과를 확인한다. nvl() 함수를 통해
+null값을 지정한 값으로 변경해준다. 결과는 19개 인출됨. */
+select employee_id, first_name, last_name,
+    nvl(department_name,'<부서없음>')
+from employees E left outer join departments D
+    on E.department_id=D.department_id
+where to_char(hire_date,'yyyy')='2007';
 
+/*
+퀴즈] 위 쿼리문을 오라클방식으로 변경하시오.
+*/
 select
-    employee_id, first_name, Em.department_id,
-    department_name, city
-from employees Em
-    left outer join departments De
-        on Em.department_id=De.department_id
-    left outer join locations Lo
-        on De.location_id=Lo.location_id;
+    employee_id, first_name, last_name,
+    nvl(department_name,'<부서없음>')
+from employees E, departments D
+where
+    E.department_id=D.department_id (+) and
+    hire_date like '07%';
