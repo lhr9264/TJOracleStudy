@@ -181,3 +181,47 @@ count(*)"사원총합",
 trim(to_char(avg(salary), '999,000'))"평균급여"
 first_name, last_name
 from employees group by department_id order by department_id;
+
+/*
+having : 물리적으로 존재하는 컬럼이 아닌 그룹함수를 통해 논리적으로
+    생성된 컬럼의 조건을 추가할때 사용한다.
+    해당 조건을 where절에 추가하면 에러가 발생한다.
+*/
+/*
+시나리오] 사원테이블에서 각 부서별로 근무하고 있는 직원의 담당업무별
+    사원수와 평균급여가 얼마인지 출력하는 쿼리문을 작성하시오.
+    단, 사원수가 10을 초과하는 레코드만 인출하시오.
+*/
+/* 같은 부서에 근무하더라도 담당업무는 다를 수 있으므로 이 문제에서는 
+group by 절에 2개의 컬럼을 명시해야한다. 즉 부서로 그룹화 한 후 다시
+담당업무별로 그룹화 한다. */
+select
+    department_id, job_id, count(*), avg(salary)
+from employees
+where count(*)>10 /* 이 부분에서 에러 발생됨. */
+group by department_id, job_id;
+/* 담당업무별 사원수는 물리적으로 존재하는 컬럼이 아니므로 where절에 
+추가하면 에러가 발생한다. 이 경우에는 having 절에 조건을 추가해야한다.
+Ex) 급여가 3000인 사원 => 물리적으로 존재하므로 where절에 추가
+    평균급여가 3000인 사원 => 개발자가 상황에 맞게 논리적으로 만들어낸
+                        결과이므로 having절에 사용해야한다. */
+select
+    department_id, job_id, count(*), avg(salary)
+from employees
+group by department_id, job_id
+having count(*)>10;--그룹의 조건은 having절에 기술한다.
+
+select * from employees;
+
+/*
+시나리오] 담당업무별 사원의 최저급여를 출력하시오.
+    단, (관리자(Manager)가 없는 사원과 최저급여가 3000미만인 그룹)은 
+    제외시키고, 결과를 급여의 내림차순으로 정렬하여 출력하시오. 
+*/
+
+select
+    job_id, min(salary)
+from employees where manager_id is not null
+group by job_id
+having not min(salary)<3000
+order by min(salary) desc;
