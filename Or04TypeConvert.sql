@@ -226,3 +226,26 @@ select
         else '부서명모름'
     end TeamName
 from employees;
+
+
+/***********
+과제
+***********/
+--scott계정에서 진행합니다.
+
+/*
+1. substr() 함수를 사용하여 사원들의 입사한 년도와 입사한 달만
+출력하시오.
+*/
+select * from emp;
+select
+    hiredate, substr(hiredate,1,5),
+    to_char(hiredate, 'yy-mm'),
+    to_char(hiredate, 'yyyy"년"mm"일"')
+from employees;
+
+/*
+2. substr()함수를 사용하여 4월에 입사한 사월을 출력하시오.
+즉, 연도에 상관ㅇ벗이 4월에 입사한 모든사원이 출력되면 된다.
+*/
+select * from emp where substr(hiredate, 4, 2)='04';
