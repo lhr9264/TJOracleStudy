@@ -233,6 +233,6 @@ create table tb_foreign3 (
     f_name varchar2(30),
     f_idx number(10)
 );
---하나의 부모테이블에 둘 이상의 자식테이블이 외래키를 설정할 수 있다.
+--하나의 부모테이블에 둘 이상의 자식테이블이 외래키를 설정할 수 있다..
 alter table tb_foreign3 add
     foreign key (f_idx) references tb_primary1 (idx);
