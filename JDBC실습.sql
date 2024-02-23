@@ -301,3 +301,63 @@ insert into board (num, title, content, id, postdate, visitcount)
     values (seq_board_num.nextval, '제목2입니다.', '내용2입니다.', 'tjoeun', sysdate, 0);
 --커밋 
 commit;
+
+/**************************
+모델1 방식의 회원제 게시판 제작하기
+***************************/
+--더미데이터 추가 입력
+insert into board values (seq_board_num.nextval, '지금은 봄입니다.',
+    '봄의왈츠','musthave', sysdate, 0);
+insert into board values (seq_board_num.nextval, '지금은 여름입니다.',
+    '여름향기','musthave', sysdate, 0);
+insert into board values (seq_board_num.nextval, '지금은 가을입니다.',
+    '가을동화','musthave', sysdate, 0);
+insert into board values (seq_board_num.nextval, '지금은 겨울입니다.',
+    '겨울연가','musthave', sysdate, 0);
+commit;
+
+--DAO의 selectCount ()메서드 : board테이블의 게시물 갯수 카운트
+select count(*) from board;
+select count(*) from board where title like '%겨울%';
+select count(*) from board where content like '%겨울%';
+
+--selectList() 메서드 : 게시판 목록에 출력할 레코드를 정렬해서 인출
+select * from board order by num desc;
+select * from board where title like '%여름%' order by num desc;
+select * from board where content like '%여름%' order by num desc;
+
+--InsertWrite() 메서드 : 글쓰기를 위해 insert쿼리를 실행
+insert into board (num, title, content, id, visitcount)
+values (seq_board_num.nextval, '제목Test', '내용Test', 'musthave', 0);
+commit;
+
+--selectView() : 게시물의 일련번호를 통해 내용보기 구현
+select * from board where num=6;
+--별칭을 부여하지 않아 테이블명을 그대로 사용한다.
+select * from board inner join member
+    on board.id=member.id
+where num = 6;
+--별칭을 부여해서 필요한 컬럼만 select 절에 기술한다.
+select B.*, M.name from board B inner join member M
+    on B.id=M.id
+where num = 6;
+
+--updateVisitCount() : 게시물 내용보기 시 조회수 1 증가
+update board set visitcount=visitcount+1 where num=6;
+commit;
+
+--내용보기시 다른 사람이 작성한 게시물으 확인하기 위해 더미데이터 추가
+insert into member (id, pass, name) values
+    ('tjoeun', '1234', '더조은');
+commit;
+
+--updateEdit() : 기존의 게시물을 수정
+select * from board where num = 7;
+update board set title='수정Test', content='내용수정Test'
+    where num = 7;
+commit;
+
+--deletePost() : 게시물 삭제
+delete from board where num=7;
+select * from board;
+commit;
