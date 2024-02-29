@@ -387,3 +387,45 @@ select * from (
 )
 where rNum between 1 and 10;
 -- 게시물의 구간은 비교연산자 혹은 between으로 작성할 수 있다.
+
+/********************************************
+모델2(MVC패턴) 방식으로 제작하는 자료실형
+*********************************************/
+
+--모델2 방식의 파일첨부형 게시판 테이블 생성
+/*
+비회원제 게시판이므로 id 대신 name,pass 컬럼이 추가된다.
+즉 작성자의 이름과 수정, 삭제를 위한 패스워드 검증 로직 추가됨.
+자료실형으로 제작되므로 파일관련 컬럼이 추가된다.  
+    ofile : Original File Name. 원본파일명
+    sfile : Saved File Name. 서버에 저장된 파일명
+    downcount : 다운로드 횟수
+*/
+create table mvcboard (
+    idx number primary key,
+    name varchar2(50) not null,
+    title varchar2(200) not null,
+    content varchar2(2000) not null,
+    postdate date default sysdate not null,
+    ofile varchar2(200),
+    sfile varchar2(30),
+    downcount number(5) default 0 not null,
+    pass varchar2(50) not null,
+    visitcount number default 0 not null
+);
+
+--더미 데이터 입력
+insert into mvcboard (idx, name, title, content, pass)
+    values (seq_board_num.nextval, '김유신', '자료실 제목1 입니다.','내용','1234');
+insert into mvcboard (idx, name, title, content, pass)
+    values (seq_board_num.nextval, '장보고', '자료실 제목2 입니다.','내용','1234');
+insert into mvcboard (idx, name, title, content, pass)
+    values (seq_board_num.nextval, '이순신', '자료실 제목3 입니다.','내용','1234');
+insert into mvcboard (idx, name, title, content, pass)
+    values (seq_board_num.nextval, '강감찬', '자료실 제목4 입니다.','내용','1234');
+insert into mvcboard (idx, name, title, content, pass)
+    values (seq_board_num.nextval, '대조영', '자료실 제목5 입니다.','내용','1234');
+
+commit;
+
+select * from mvcboard;
